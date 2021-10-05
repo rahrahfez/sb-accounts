@@ -10,7 +10,9 @@ namespace sb_accounts.Repository
     {
         bool SaveChanges();
         Account GetAccountById(Guid id);
+        Account GetAccountByUsername(string username);
         void DeleteAccount(Account account);
+        void AddAccount(Account account);
         IEnumerable<Account> GetAllAccounts();
     }
 }

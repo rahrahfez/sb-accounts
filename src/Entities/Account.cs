@@ -31,21 +31,25 @@ namespace sb_accounts.Entities
         public DateTime RefreshTokenExpiry { get; set; }
         private Account() { }
         public Account(
-            Guid id,
             string username,
-            string hashedPassword,
-            int availableBalance,
-            DateTime createdAt,
-            DateTime updatedAt,
-            DateTime lastLogin)
+            string hashedPassword)
         {
-            Id = id;
+            Id = Guid.NewGuid();
             Username = username;
             HashedPassword = hashedPassword;
-            AvailableBalance = availableBalance;
-            CreatedAt = createdAt;
-            UpdatedAt = updatedAt;
-            LastLoginAt = lastLogin;
+            CreatedAt = DateTime.Now;
+            UpdatedAt = DateTime.Now;
+            LastLoginAt = DateTime.Now;
+        }
+        public void UpdateUsername(Account account, string username)
+        {
+            account.Username = username;
+        }
+        public bool HasSufficientBalance(int wagerAmount)
+        {
+            if (wagerAmount > AvailableBalance)
+                return false;
+            else return true;
         }
     }
 }

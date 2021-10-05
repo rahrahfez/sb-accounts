@@ -7,5 +7,7 @@ namespace sb_accounts.Services
 {
     public interface IAccountService
     {
+        string CreatePasswordHash(string password);
+        bool VerifyPasswordHash(string hashedPassword, string password);
     }
 }

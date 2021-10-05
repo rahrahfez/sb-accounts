@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using sb_accounts.Data;
@@ -22,12 +23,21 @@ namespace sb_accounts.Repository
 
         public Account GetAccountById(Guid id)
         {
-            throw new NotImplementedException();
+            return _context.Accounts.Find(id);
         }
 
         public IEnumerable<Account> GetAllAccounts()
         {
-            throw new NotImplementedException();
+            return _context.Accounts.ToList();
+        }
+        public Account GetAccountByUsername(string username)
+        {
+            return _context.Accounts.FirstOrDefault(e => e.Username.Equals(username));
+        }
+
+        public void AddAccount(Account account)
+        {
+            _context.Add(account);
         }
 
         public bool SaveChanges()
