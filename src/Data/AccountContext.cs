@@ -11,5 +11,6 @@ namespace sb_accounts.Data
     {
         public AccountContext(DbContextOptions options) : base(options) { }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<RefreshToken> RefreshToken { get; set; }
     }
 }

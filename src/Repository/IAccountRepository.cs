@@ -13,6 +13,7 @@ namespace sb_accounts.Repository
         Account GetAccountByUsername(string username);
         void DeleteAccount(Account account);
         void AddAccount(Account account);
+        void Update(Account account);
         IEnumerable<Account> GetAllAccounts();
     }
 }

@@ -10,10 +10,12 @@
 *.userosscache
 *.sln.docstates
 .vscode
-appsettings.json
-appsettings.development.json
-appsettings.production.json
-global.json
+/src/appsettings.json
+/src/appsettings.development.json
+/src/appsettings.production.json
+Dockerfile
+.dockerignore
+/src/global.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using sb_accounts.Data;
 using sb_accounts.Services;
 using sb_accounts.Repository;
+using sb_accounts.Authorization;
 
 namespace sb_accounts
 {
@@ -33,6 +34,7 @@ namespace sb_accounts
             });
             services.AddControllers();
             services.AddSingleton<IAccountService, AccountService>();
+            services.AddSingleton<IJwtUtil, JwtUtil>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddCors(options =>
@@ -60,13 +62,14 @@ namespace sb_accounts
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "SB_Accounts v1");
                     c.RoutePrefix = string.Empty;
                 });
-                using var scope = app.ApplicationServices.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<AccountContext>();
-                if (!context.Database.EnsureCreated())
-                {
-                    //context.Database.Migrate();
-                    Console.WriteLine("Database created.");
-                }
+            }
+
+            using var scope = app.ApplicationServices.CreateScope();
+            using var context = scope.ServiceProvider.GetRequiredService<AccountContext>();
+            if (!context.Database.EnsureCreated())
+            {
+                context.Database.Migrate();
+                Console.WriteLine("Database created.");
             }
 
             app.UseRouting();

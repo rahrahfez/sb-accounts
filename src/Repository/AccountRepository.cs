@@ -40,6 +40,10 @@ namespace sb_accounts.Repository
             _context.Add(account);
         }
 
+        public void Update(Account account)
+        {
+            _context.Update(account);
+        }
         public bool SaveChanges()
         {
             return _context.SaveChanges() >= 0;
