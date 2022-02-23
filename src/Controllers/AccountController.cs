@@ -18,12 +18,12 @@ namespace sb_accounts.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountRepository _repository;
-        private readonly IAccountService _service;
+        private readonly IAuthenticationService _service;
         private readonly IMapper _mapper;
         private readonly IJwtUtil _jwtUtil;
         public AccountController(
             IAccountRepository repository,
-            IAccountService service,
+            IAuthenticationService service,
             IMapper mapper,
             IJwtUtil jwtUtil) 
         {

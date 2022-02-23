@@ -6,7 +6,7 @@ using Scrypt;
 
 namespace sb_accounts.Services
 {
-    public class AccountService : IAccountService
+    public class AuthenticationService : IAuthenticationService
     {
         public string CreatePasswordHash(string password)
         {

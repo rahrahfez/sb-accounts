@@ -17,7 +17,6 @@ namespace sb_accounts.Entities
         [Column("username")]
         public string Username { get; private set; }
         [Column("password_hash")]
-        [JsonIgnore]
         public string PasswordHash { get; private set; }
         [Column("created_at")]
         public DateTime CreatedAt { get; private set; }
@@ -28,9 +27,7 @@ namespace sb_accounts.Entities
         [Column("available_balance")]
         public int AvailableBalance { get; set; }
         [Column("refresh_tokens")]
-        [JsonIgnore]
         public List<RefreshToken> RefreshTokens { get; set; }
-        private Account() { }
         public Account(
             string username,
             string hashedPassword)
@@ -42,14 +39,13 @@ namespace sb_accounts.Entities
             UpdatedAt = DateTime.Now;
             LastLoginAt = DateTime.Now;
         }
-        public void UpdateUsername(Account account, string username)
+        public void UpdateUsername(string username)
         {
-            account.Username = username;
+            Username = username;
         }
         public bool HasSufficientBalance(int wagerAmount)
         {
-            if (wagerAmount > AvailableBalance)
-                return false;
+            if (wagerAmount > AvailableBalance) return false;
             else return true;
         }
     }

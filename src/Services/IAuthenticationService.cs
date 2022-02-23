@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace sb_accounts.Services
 {
-    public interface IAccountService
+    public interface IAuthenticationService
     {
         string CreatePasswordHash(string password);
         bool VerifyPasswordHash(string hashedPassword, string password);

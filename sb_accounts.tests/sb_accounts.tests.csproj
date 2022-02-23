@@ -23,4 +23,9 @@
     <ProjectReference Include="..\src\sb_accounts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Entities\ " />
+  </ItemGroup>
+
 </Project>

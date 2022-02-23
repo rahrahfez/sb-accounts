@@ -33,12 +33,13 @@ namespace sb_accounts
                 opts.UseSqlServer(Configuration.GetConnectionString("SportsBetsAccounts"));
             });
             services.AddControllers();
-            services.AddSingleton<IAccountService, AccountService>();
+            services.AddSingleton<IAuthenticationService, AuthenticationService>();
             services.AddSingleton<IJwtUtil, JwtUtil>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddCors(options =>
             {
+
                 options.AddPolicy("CorsPolicy",
                     builder => builder.AllowAnyOrigin()
                     .AllowAnyHeader()
