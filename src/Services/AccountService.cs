@@ -16,8 +16,7 @@ namespace sb_accounts.Services
         public bool DoesUsernameExist(string username)
         {
             var user = _accountRepository.GetAccountByUsername(username);
-            if (user == null) return false;
-            else return true;
+            return user == null ? false : true;
         }
     }
 }
