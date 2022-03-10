@@ -9,7 +9,7 @@ namespace sb_accounts.tests.Services
         public Mock<IAccountRepository> accountRepositoryMock = new();
 
         [Fact]
-        public void AccountService_DoesUsernameExist()
+        public void AccountService_DoesUsernameExistTest()
         {
 
         }
