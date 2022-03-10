@@ -1,16 +1,17 @@
 ﻿using System;
 using Xunit;
+using Moq;
 using sb_accounts.Services;
 
 namespace sb_accounts.tests.Services
 {
     public class AuthenticationServiceTest
     {
+        public AuthenticationService authenticationService = new();
+
         [Fact]
         public void AuthenticationService_CreatePasswordHash()
         {
-            AuthenticationService authenticationService = new AuthenticationService();
-
             var passwordHash = authenticationService.CreatePasswordHash("password");
 
             Assert.NotNull(passwordHash);
@@ -18,7 +19,6 @@ namespace sb_accounts.tests.Services
         [Fact]
         public void AuthenticationService_VerifyPasswordHash()
         {
-            AuthenticationService authenticationService = new AuthenticationService();
 
             var passwordHash = authenticationService.CreatePasswordHash("password");
 

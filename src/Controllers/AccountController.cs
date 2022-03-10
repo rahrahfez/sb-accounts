@@ -17,31 +17,31 @@ namespace sb_accounts.Controllers
     [Route("/api/[controller]")]
     public class AccountController : Controller
     {
-        private readonly IAccountRepository _repository;
-        private readonly IAuthenticationService _service;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IAuthenticationService _authenticationService;
         private readonly IMapper _mapper;
         private readonly IJwtUtil _jwtUtil;
         public AccountController(
-            IAccountRepository repository,
-            IAuthenticationService service,
+            IAccountRepository accountRepository,
+            IAuthenticationService authenticationService,
             IMapper mapper,
             IJwtUtil jwtUtil) 
         {
-            _repository = repository;
-            _service = service;
+            _accountRepository = accountRepository;
+            _authenticationService = authenticationService;
             _mapper = mapper;
             _jwtUtil = jwtUtil;
         }
         [HttpGet]
         public IActionResult GetAllAccounts()
         {
-            var accounts = _repository.GetAllAccounts();
+            var accounts = _accountRepository.GetAllAccounts();
             return Ok(accounts);
         }
         [HttpGet("{id}", Name = "Get")]
         public IActionResult GetAccountById(Guid id)
         {
-            var account = _repository.GetAccountById(id);
+            var account = _accountRepository.GetAccountById(id);
             if (account == null)
             {
                 return BadRequest();
@@ -55,13 +55,13 @@ namespace sb_accounts.Controllers
         [HttpPost("register")]
         public IActionResult RegisterNewAccount([FromBody]AccountRequestDTO accountRequestDTO)
         {
-            if (_repository.GetAccountByUsername(accountRequestDTO.Username) != null)
+            if (_accountRepository.GetAccountByUsername(accountRequestDTO.Username) != null)
             {
                 return BadRequest("Username already exists.");
             }
             else
             {
-                var hashedPassword = _service.CreatePasswordHash(accountRequestDTO.Password);
+                var hashedPassword = _authenticationService.CreatePasswordHash(accountRequestDTO.Password);
                 var account = new Account(
                     accountRequestDTO.Username,
                     hashedPassword)
@@ -69,7 +69,7 @@ namespace sb_accounts.Controllers
                     AvailableBalance = 0
                 };
                 var jwtToken = _jwtUtil.GenerateJwtToken(account);
-                var refreshToken = _jwtUtil.GenerateRefreshToken(ipAddress());
+                var refreshToken = _jwtUtil.GenerateRefreshToken(IpAddress());
                 var response = new AccountResponseDTO(
                   account.Id, 
                   accountRequestDTO.Username, 
@@ -80,9 +80,9 @@ namespace sb_accounts.Controllers
                 );
 
                 account.RefreshTokens.Add(refreshToken);
-                setTokenCookie(refreshToken.Token);
-                _repository.AddAccount(account);
-                _repository.SaveChanges();
+                SetTokenCookie(refreshToken.Token);
+                _accountRepository.AddAccount(account);
+                _accountRepository.SaveChanges();
 
                 return CreatedAtRoute("Get", routeValues: new { id = account.Id }, value: response);
             }
@@ -90,19 +90,19 @@ namespace sb_accounts.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]AccountRequestDTO accountRequestDTO)
         {
-            var account = _repository.GetAccountByUsername(accountRequestDTO.Username);
-            if (account != null && !_service.VerifyPasswordHash(account.PasswordHash, accountRequestDTO.Password))
+            var account = _accountRepository.GetAccountByUsername(accountRequestDTO.Username);
+            if (account != null && !_authenticationService.VerifyPasswordHash(account.PasswordHash, accountRequestDTO.Password))
                 return BadRequest();
 
             var jwtToken = _jwtUtil.GenerateJwtToken(account);
-            var refreshToken = _jwtUtil.GenerateRefreshToken(ipAddress());
+            var refreshToken = _jwtUtil.GenerateRefreshToken(IpAddress());
 
             account.RefreshTokens.Add(refreshToken);
             account.LastLoginAt = DateTime.Now;
-            setTokenCookie(refreshToken.Token);
+            SetTokenCookie(refreshToken.Token);
 
-            _repository.Update(account);
-            _repository.SaveChanges();
+            _accountRepository.Update(account);
+            _accountRepository.SaveChanges();
 
             return Ok(new AccountResponseDTO(
               account.Id, 
@@ -113,13 +113,13 @@ namespace sb_accounts.Controllers
               refreshToken.Token
             ));
         }
-        private string ipAddress()
+        private string IpAddress()
         {
             if (Request.Headers.ContainsKey("X-Forwared-For"))
                 return Request.Headers["X-Forwared-For"];
             else return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
-        private void setTokenCookie(string token)
+        private void SetTokenCookie(string token)
         {
             var cookieOptions = new CookieOptions
             {

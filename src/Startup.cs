@@ -34,6 +34,7 @@ namespace sb_accounts
             });
             services.AddControllers();
             services.AddSingleton<IAuthenticationService, AuthenticationService>();
+            services.AddSingleton<IAccountService, AccountService>();
             services.AddSingleton<IJwtUtil, JwtUtil>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
