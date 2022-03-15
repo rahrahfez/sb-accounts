@@ -13,7 +13,7 @@ namespace sb_accounts.tests.Services
         public void AccountService_DoesUsernameExistTest()
         {
             var accountRepositoryMock = new Mock<IAccountRepository>();
-            accountRepositoryMock.Setup(u => u.GetAccountByUsername("test")).Returns(new Account("test", "password"));
+            accountRepositoryMock.Setup(u => u.GetAccountByUsername("test")).Returns(new Account(Guid.NewGuid(), "test", "password"));
 
             var accountService = new AccountService(accountRepositoryMock.Object);
             var user = accountService.DoesUsernameExist("test");

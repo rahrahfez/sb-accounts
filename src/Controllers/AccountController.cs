@@ -18,16 +18,19 @@ namespace sb_accounts.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IAccountService _accountService;
         private readonly IAuthenticationService _authenticationService;
         private readonly IMapper _mapper;
         private readonly IJwtUtil _jwtUtil;
         public AccountController(
             IAccountRepository accountRepository,
+            IAccountService accountService,
             IAuthenticationService authenticationService,
             IMapper mapper,
             IJwtUtil jwtUtil) 
         {
             _accountRepository = accountRepository;
+            _accountService = accountService;
             _authenticationService = authenticationService;
             _mapper = mapper;
             _jwtUtil = jwtUtil;
@@ -42,9 +45,10 @@ namespace sb_accounts.Controllers
         public IActionResult GetAccountById(Guid id)
         {
             var account = _accountRepository.GetAccountById(id);
-            if (account == null)
+            if (account == Account.NotFound)
             {
-                return BadRequest();
+                // Returns Null Object if account is not found
+                return BadRequest(account);
             }
             else
             {
@@ -55,19 +59,14 @@ namespace sb_accounts.Controllers
         [HttpPost("register")]
         public IActionResult RegisterNewAccount([FromBody]AccountRequestDTO accountRequestDTO)
         {
-            if (_accountRepository.GetAccountByUsername(accountRequestDTO.Username) != null)
+            if (_accountService.DoesUsernameExist(accountRequestDTO.Username) == true)
             {
                 return BadRequest("Username already exists.");
             }
             else
             {
                 var hashedPassword = _authenticationService.CreatePasswordHash(accountRequestDTO.Password);
-                var account = new Account(
-                    accountRequestDTO.Username,
-                    hashedPassword)
-                {
-                    AvailableBalance = 0
-                };
+                var account = new Account(Guid.NewGuid(), accountRequestDTO.Username, hashedPassword);
                 var jwtToken = _jwtUtil.GenerateJwtToken(account);
                 var refreshToken = _jwtUtil.GenerateRefreshToken(IpAddress());
                 var response = new AccountResponseDTO(

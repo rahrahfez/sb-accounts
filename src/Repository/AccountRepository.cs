@@ -23,7 +23,7 @@ namespace sb_accounts.Repository
 
         public Account GetAccountById(Guid id)
         {
-            return _context.Accounts.Find(id);
+            return _context.Accounts.Find(id) ?? Account.NotFound;
         }
 
         public IEnumerable<Account> GetAllAccounts()
@@ -32,7 +32,7 @@ namespace sb_accounts.Repository
         }
         public Account GetAccountByUsername(string username)
         {
-            return _context.Accounts.FirstOrDefault(e => e.Username.Equals(username));
+            return _context.Accounts.Where(e => e.Username.Equals(username)).First() ?? Account.NotFound;
         }
 
         public void AddAccount(Account account)

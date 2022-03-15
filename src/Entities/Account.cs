@@ -29,15 +29,18 @@ namespace sb_accounts.Entities
         [Column("refresh_tokens")]
         public List<RefreshToken> RefreshTokens { get; set; }
         public Account(
+            Guid id,
             string username,
-            string hashedPassword)
+            string hashedPassword,
+            int availableBalance = 0)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             Username = username;
             PasswordHash = hashedPassword;
             CreatedAt = DateTime.Now;
             UpdatedAt = DateTime.Now;
             LastLoginAt = DateTime.Now;
+            AvailableBalance = availableBalance;
         }
         public void UpdateUsername(string username)
         {
@@ -48,5 +51,6 @@ namespace sb_accounts.Entities
             if (wagerAmount > AvailableBalance) return false;
             else return true;
         }
+        public static readonly Account NotFound = new(Guid.Empty, "", "");
     }
 }
