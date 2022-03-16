@@ -8,11 +8,12 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["./src/sb_accounts.csproj", "src/"]
+#COPY ["./src/bin/Debug/net5.0/appsettings.Production.json", "."]
 RUN dotnet restore "./src/sb_accounts.csproj"
 COPY . .
 WORKDIR "/src/src"
 RUN dotnet build "sb_accounts.csproj" -c Release -o /app/build
-COPY ["./src/src/bin/Debug/net5.0/appsettings.Production.json", "."]
+
 
 FROM build AS publish
 RUN dotnet publish "sb_accounts.csproj" -c Release -o /app/publish
